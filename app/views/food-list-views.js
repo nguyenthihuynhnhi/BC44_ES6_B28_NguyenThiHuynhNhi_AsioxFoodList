@@ -6,11 +6,8 @@ foodList.init();
 document
   .querySelector("#tbodyFood")
   .addEventListener("click", function (event) {
-    // console.log("🏊🏼‍♀️ 👙 event:", event)
-    // console.log("🏊🏼‍♀️ 👙 event:", event.target.dataset.id);
     const flag = event.target.dataset.flag;
     const id = event.target.dataset.id;
-    // console.log("🏊🏼‍♀️ 👙 flag:", flag)
 
     if (flag === "delete") {
       foodList.clickDelete(id);
@@ -36,11 +33,19 @@ btnThemEl.addEventListener("click", function () {
   btnCapNhatEl.disabled = true;
   const btnThemMonEl = document.getElementById("btnThemMon");
   btnThemMonEl.disabled = false;
-})
-
+});
 
 // selLoai
 const selLoaiEl = document.getElementById("selLoai");
 selLoaiEl.addEventListener("change", function () {
-  foodList.filter(selLoaiEl.value)
-})
+  foodList.filter(selLoaiEl.value);
+});
+
+// searchBar
+
+const searchBar = document.getElementById("searchBar");
+searchBar.addEventListener("keydown", function (event) {
+  if ("Enter" === event.key) {
+    foodList.searchName(searchBar.value);
+  }
+});

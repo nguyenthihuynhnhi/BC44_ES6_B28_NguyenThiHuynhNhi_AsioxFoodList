@@ -2,7 +2,6 @@
 // R: READ;
 // U: UPDATE;
 // D: DETELE;
-let arrData1 = []
 export const foodList = {
   arrData: [],
   url: `https://64561e422e41ccf169141dd8.mockapi.io/food/`,
@@ -10,11 +9,10 @@ export const foodList = {
     return axios.post(this.url, item);
   },
   read: async function () {
-    const result = await axios.get(this.BASE_URL);
-    arrData1 = result.data;
-    console.log(arrData1);
+    const result = await axios.get(this.url);
+    this.arrData = result.data;
     return result;
-},
+  },
   readOneItem: function (id) {
     return axios.get(this.url + id);
   },
@@ -66,20 +64,16 @@ export const foodList = {
   clickDelete: async function (id) {
     await this.delete(id);
     const deleteItem = await this.read(id);
-    console.log("🏊🏼‍♀️ 👙 deleteItem:", deleteItem);
 
     this.render(deleteItem.data);
   },
   clickEdit: async function (ma) {
-    console.log("🏊🏼‍♀️ 👙 id:", ma);
     const btnCapNhatEl = document.getElementById("btnCapNhat");
     btnCapNhatEl.disabled = false;
     const btnThemMonEl = document.getElementById("btnThemMon");
     btnThemMonEl.disabled = true;
     $("#exampleModal").modal("show");
     const dataOneItem = await this.readOneItem(ma);
-
-    console.log("🏊🏼‍♀️ 👙 dataOneItem:", dataOneItem.data);
 
     const {
       discount,
@@ -104,13 +98,12 @@ export const foodList = {
   },
   clickUpdate: async function () {
     const dataForm = this.layThongTinTuForm();
-    console.log("🏊🏼‍♀️ 👙 dataForm:", dataForm);
     await this.update(dataForm.id, dataForm);
 
     const resultFormAPI = await this.read();
 
     this.render(resultFormAPI.data);
-    console.log("🏊🏼‍♀️ 👙 resultFormAPI.data:", resultFormAPI.data);
+    $("#exampleModal").modal("hide");
   },
   layThongTinTuForm: function () {
     let id = document.getElementById("foodID").value;
@@ -126,6 +119,24 @@ export const foodList = {
     return dataForm;
   },
   filter: function (value) {
-    console.log(value);
+    if (value === "all" || value === "Chọn loại") {
+      this.render(this.arrData);
+      return;
+    }
+    const result = this.arrData.filter(function (item) {
+      if (item.type === value) {
+        return true;
+      }
+    });
+    this.render(result);
+  },
+  searchName: async function (value) {
+    const result = await axios.get(this.url, {
+      params: {
+        name: value,
+      },
+    });
+    this.arrData = result.data;
+    this.render(result.data);
   },
 };
